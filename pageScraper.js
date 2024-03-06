@@ -29,15 +29,18 @@ const scraperObject = {
           // Extract the team name and rank
           const teamNameWithRank = tds[0].textContent.trim();
           const match = teamNameWithRank.match(/^(\d+)(.+)/);
+         
 
-          if (match) {
+          // if (match) {
             // If a match is found, set the rank and team name accordingly
+            console.log("match,", match)
             conferenceData.rank = match[1];
-            conferenceData.team = match[2].trim();
-          } else {
-            // If no match is found, set the team name only
-            conferenceData.team = teamNameWithRank;
-          }
+            conferenceData.team = match[2].split('-')[0].trim();
+          // } else {
+          //   // If no match is found, set the team name only
+          //   conferenceData.team = teamNameWithRank;
+          // }
+          console.log("twr", teamNameWithRank)
 
           // Assign values to other keys in the conferenceData object
           conferenceData.wins = tds[1].textContent.trim();
