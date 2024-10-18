@@ -15,6 +15,10 @@ const teamSchema = new mongoose.Schema({
   otRecord: String,
   lastTen: String,
   streak: String,
+  homeStreak: String, // Added for streak data
+  roadStreak: String, // Added for streak data
+  l10Home: String,    // Added for streak data
+  l10Away: String 
 });
 
 // Define the schema for a conference
