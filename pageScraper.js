@@ -5,6 +5,9 @@ require('dotenv').config();
 const scraperObject = {
   url: 'https://www.nba.com/standings',
   streaksUrl: 'https://www.nba.com/standings?Section=streaks',
+  marginsUrl:'https://www.nba.com/standings?Section=margins',
+  confUrl:'https://www.nba.com/standings?Section=vs',
+  calendarUrl:'https://www.nba.com/standings?Section=calendar',
 
   async scraper(browser) {
     const mongoURL = process.env.MONGO_DB_CONNECTION;
@@ -141,7 +144,276 @@ const scraperObject = {
       mergeStreaksIntoStandings(standingsData.easternConference, streaksData.easternConference);
       mergeStreaksIntoStandings(standingsData.westernConference, streaksData.westernConference);
 
-      console.log('Merged standings with streak data:', standingsData);
+      // console.log('Merged standings with streak data:', standingsData);
+
+      // Scrape margins data
+      await page.goto(this.marginsUrl, { waitUntil: 'domcontentloaded' });
+
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+
+      await page.waitForTimeout(3000); // Delay to ensure content loads
+
+      const easternTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+
+      const easternMarginsData = await Promise.all(easternTeamsMargins.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+      
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+      
+          conferenceData.threePtGames = tds[5].textContent.trim();
+          conferenceData.tenPtGames = tds[6].textContent.trim();
+          conferenceData.score100 = tds[7].textContent.trim();
+          conferenceData.oppScore100 = tds[8].textContent.trim();
+          conferenceData.oppOver500 = tds[9].textContent.trim();
+          conferenceData.leadReb = tds[11].textContent.trim();
+          conferenceData.fewTurn = tds[12].textContent.trim();
+      
+          return conferenceData;
+        });
+      }));
+      
+
+      console.log(easternMarginsData)
+
+      const westernTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernMarginsData = await Promise.all(westernTeamsMargins.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+
+          conferenceData.threePtGames = tds[5].textContent.trim();
+          conferenceData.tenPtGames = tds[6].textContent.trim();
+          conferenceData.score100 = tds[7].textContent.trim();
+          conferenceData.oppScore100 = tds[8].textContent.trim();
+          conferenceData.oppOver500 = tds[9].textContent.trim();
+          conferenceData.leadReb = tds[11].textContent.trim();
+          conferenceData.fewTurn = tds[12].textContent.trim();
+
+          return conferenceData;
+        });
+      }));
+      console.log(westernMarginsData)
+
+      marginsData = {
+        easternConference: easternMarginsData,
+        westernConference: westernMarginsData,
+      };
+
+      const mergeMarginsIntoStandings = (standings, margins) => {
+        standings.forEach((team) => {
+          const marginsTeam = margins.find((margin) => margin.team === team.team);
+          if (marginsTeam) {
+            Object.assign(team, marginsTeam); // Merge streak data into the team object
+          }
+        });
+      };
+
+      // Merge the streak data into the standings data
+      mergeMarginsIntoStandings(standingsData.easternConference, marginsData.easternConference);
+      mergeMarginsIntoStandings(standingsData.westernConference, marginsData.westernConference);
+
+      // console.log("merged margins into standings data", standingsData)
+
+      // Scrape conf data
+      await page.goto(this.confUrl, { waitUntil: 'domcontentloaded' });
+
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+
+      await page.waitForTimeout(3000); // Delay to ensure content loads
+
+      const easternTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+
+      const easternConfData = await Promise.all(easternTeamsConf.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+      
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+      
+          conferenceData.vsEast = tds[5].textContent.trim();
+          conferenceData.vsWest = tds[6].textContent.trim();
+          conferenceData.vsAtlantic = tds[7].textContent.trim();
+          conferenceData.vsCentral = tds[8].textContent.trim();
+          conferenceData.vsSoutheast = tds[9].textContent.trim();
+          conferenceData.vsNorthwest = tds[10].textContent.trim();
+          conferenceData.vsPacific = tds[11].textContent.trim();
+          conferenceData.vsSouthwest = tds[12].textContent.trim();
+      
+          return conferenceData;
+        });
+      }));
+      
+
+   
+
+      const westernTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernConfData = await Promise.all(westernTeamsConf.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+
+          conferenceData.vsEast = tds[5].textContent.trim();
+          conferenceData.vsWest = tds[6].textContent.trim();
+          conferenceData.vsAtlantic = tds[7].textContent.trim();
+          conferenceData.vsCentral = tds[8].textContent.trim();
+          conferenceData.vsSoutheast = tds[9].textContent.trim();
+          conferenceData.vsNorthwest = tds[10].textContent.trim();
+          conferenceData.vsPacific = tds[11].textContent.trim();
+          conferenceData.vsSouthwest = tds[12].textContent.trim();
+
+          return conferenceData;
+        });
+      }));
+    
+
+      confData = {
+        easternConference: easternConfData,
+        westernConference: westernConfData,
+      };
+
+      const mergeConfIntoStandings = (standings, conf) => {
+        standings.forEach((team) => {
+          const confTeam = conf.find((conf) => conf.team === team.team);
+          if (confTeam) {
+            Object.assign(team, confTeam); // Merge streak data into the team object
+          }
+        });
+      };
+
+      // // Merge the conf data into the standings data
+      mergeConfIntoStandings(standingsData.easternConference, confData.easternConference);
+      mergeConfIntoStandings(standingsData.westernConference, confData.westernConference);
+
+     
+
+      // Scrape Calandar data
+      await page.goto(this.calendarUrl, { waitUntil: 'domcontentloaded' });
+
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+      await page.waitForSelector(
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        { visible: true, timeout: 10000 }
+      );
+
+      await page.waitForTimeout(3000); // Delay to ensure content loads
+
+      const easternTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+
+      const easternCalendarData = await Promise.all(easternTeamsCalendar.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+      
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+      
+          conferenceData.octReord = tds[5].textContent.trim();
+          conferenceData.novRecord = tds[6].textContent.trim();
+          conferenceData.decRecord= tds[7].textContent.trim();
+          conferenceData.janRecord = tds[8].textContent.trim();
+          conferenceData.febRecord = tds[9].textContent.trim();
+          conferenceData.marRecord = tds[10].textContent.trim();
+          conferenceData.aprRecord = tds[11].textContent.trim();
+      
+          return conferenceData;
+        });
+      }));
+      
+
+    
+
+      const westernTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernCalendarData = await Promise.all(westernTeamsCalendar.map(async (team) => {
+        const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
+        return await teamHandle.evaluate((teamRow) => {
+          const tds = teamRow.querySelectorAll('td');
+          const conferenceData = {};
+          const teamNameWithRank = tds[0].textContent.trim();
+          const match = teamNameWithRank.match(/^(\d+)(.+)/);
+
+          if (match) {
+            conferenceData.team = match[2].split('-')[0].trim();
+          }
+
+          conferenceData.octReord = tds[5].textContent.trim();
+          conferenceData.novRecord = tds[6].textContent.trim();
+          conferenceData.decRecord= tds[7].textContent.trim();
+          conferenceData.janRecord = tds[8].textContent.trim();
+          conferenceData.febRecord = tds[9].textContent.trim();
+          conferenceData.marRecord = tds[10].textContent.trim();
+          conferenceData.aprRecord = tds[11].textContent.trim();
+
+          return conferenceData;
+        });
+      }));
+    
+
+      calendarData = {
+        easternConference: easternCalendarData,
+        westernConference: westernCalendarData,
+      };
+
+      const mergeCalendarIntoStandings = (standings, calendar) => {
+        standings.forEach((team) => {
+          const calendarTeam = calendar.find((cal) => cal.team === team.team);
+          if (calendarTeam) {
+            Object.assign(team, calendarTeam); // Merge streak data into the team object
+          }
+        });
+      };
+
+      // // // Merge the cal data into the standings data
+      mergeCalendarIntoStandings(standingsData.easternConference, calendarData.easternConference);
+      mergeCalendarIntoStandings(standingsData.westernConference, calendarData.westernConference);
+
+      console.log("merged cal recrods into standings data", standingsData)
 
       // Uncomment the MongoDB code when ready to save the data
       await mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });

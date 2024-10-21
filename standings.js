@@ -18,7 +18,29 @@ const teamSchema = new mongoose.Schema({
   homeStreak: String, // Added for streak data
   roadStreak: String, // Added for streak data
   l10Home: String,    // Added for streak data
-  l10Away: String 
+  l10Away: String,
+  threePtGames: String,
+  tenPtGames: String,
+  score100: String,
+  oppScore100: String,
+  oppOver500: String,
+  leadReb: String,
+  fewTurn: String, 
+  vsEast: String,
+  vsWest: String,
+  vsAtlantic: String,
+  vsCentral: String,
+  vsSoutheast:String,
+  vsNorthwest: String,
+  vsPacific:String,
+  vsSouthwest: String,
+  octRecord: String,
+  novRecord: String,
+  decRecord: String,
+  janRecord: String,
+  febRecord: String,
+  marRecord: String,
+  aprRecord: String,
 });
 
 // Define the schema for a conference
