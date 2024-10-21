@@ -3,11 +3,11 @@ const Standings = require('./standings');
 require('dotenv').config();
 
 const scraperObject = {
-  url: 'https://www.nba.com/standings',
-  streaksUrl: 'https://www.nba.com/standings?Section=streaks',
-  marginsUrl:'https://www.nba.com/standings?Section=margins',
-  confUrl:'https://www.nba.com/standings?Section=vs',
-  calendarUrl:'https://www.nba.com/standings?Section=calendar',
+  url: 'https://www.nba.com/standings?Section=overall&Season=2024-25',
+  streaksUrl: 'https://www.nba.com/standings?Section=streaks&Season=2024-25',
+  marginsUrl:'https://www.nba.com/standings?Section=margins&Season=2024-25',
+  confUrl:'https://www.nba.com/standings?Section=vs&Season=2024-25',
+  calendarUrl:'https://www.nba.com/standings?Section=calendar&Season=2024-25',
 
   async scraper(browser) {
     const mongoURL = process.env.MONGO_DB_CONNECTION;
@@ -354,7 +354,7 @@ const scraperObject = {
             conferenceData.team = match[2].split('-')[0].trim();
           }
       
-          conferenceData.octReord = tds[5].textContent.trim();
+          conferenceData.octRecord = tds[5].textContent.trim();
           conferenceData.novRecord = tds[6].textContent.trim();
           conferenceData.decRecord= tds[7].textContent.trim();
           conferenceData.janRecord = tds[8].textContent.trim();
@@ -382,7 +382,7 @@ const scraperObject = {
             conferenceData.team = match[2].split('-')[0].trim();
           }
 
-          conferenceData.octReord = tds[5].textContent.trim();
+          conferenceData.octRecord = tds[5].textContent.trim();
           conferenceData.novRecord = tds[6].textContent.trim();
           conferenceData.decRecord= tds[7].textContent.trim();
           conferenceData.janRecord = tds[8].textContent.trim();
