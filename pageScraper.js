@@ -73,17 +73,17 @@ const scraperObject = {
       await page.goto(this.streaksUrl, { waitUntil: 'domcontentloaded' });
 
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
 
       await page.waitForTimeout(3000); // Delay to ensure content loads
 
-      const easternTeams = await page.$$('#__next > div.Layout_base__6IeUC.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const easternTeams = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
       const easternStreaksData = await Promise.all(easternTeams.map(async (team) => {
         return await team.evaluate((teamRow) => {
           const tds = teamRow.querySelectorAll('td');
@@ -104,7 +104,7 @@ const scraperObject = {
         });
       }));
 
-      const westernTeams = await page.$$('#__next > div.Layout_base__6IeUC.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernTeams = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
       const westernStreaksData = await Promise.all(westernTeams.map(async (team) => {
         return await team.evaluate((teamRow) => {
           const tds = teamRow.querySelectorAll('td');
@@ -150,17 +150,17 @@ const scraperObject = {
       await page.goto(this.marginsUrl, { waitUntil: 'domcontentloaded' });
 
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
 
       await page.waitForTimeout(3000); // Delay to ensure content loads
 
-      const easternTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const easternTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
 
       const easternMarginsData = await Promise.all(easternTeamsMargins.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
@@ -189,7 +189,7 @@ const scraperObject = {
 
       console.log(easternMarginsData)
 
-      const westernTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernTeamsMargins = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
       const westernMarginsData = await Promise.all(westernTeamsMargins.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
         return await teamHandle.evaluate((teamRow) => {
@@ -239,17 +239,17 @@ const scraperObject = {
       await page.goto(this.confUrl, { waitUntil: 'domcontentloaded' });
 
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
 
       await page.waitForTimeout(3000); // Delay to ensure content loads
 
-      const easternTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const easternTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
 
       const easternConfData = await Promise.all(easternTeamsConf.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
@@ -279,7 +279,7 @@ const scraperObject = {
 
    
 
-      const westernTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernTeamsConf = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
       const westernConfData = await Promise.all(westernTeamsConf.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
         return await teamHandle.evaluate((teamRow) => {
@@ -330,17 +330,17 @@ const scraperObject = {
       await page.goto(this.calendarUrl, { waitUntil: 'domcontentloaded' });
 
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
       await page.waitForSelector(
-        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
+        '#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table',
         { visible: true, timeout: 10000 }
       );
 
       await page.waitForTimeout(3000); // Delay to ensure content loads
 
-      const easternTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const easternTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(2) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
 
       const easternCalendarData = await Promise.all(easternTeamsCalendar.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
@@ -369,7 +369,7 @@ const scraperObject = {
 
     
 
-      const westernTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0.Layout_withSubNav__ByKRF > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
+      const westernTeamsCalendar = await page.$$('#__next > div.Layout_base__6IeUC.Layout_justNav__2H4H0 > div.Layout_mainContent__jXliI > div.MaxWidthContainer_mwc__ID5AG > section.Block_block__62M07.nba-stats-content-block > div > div:nth-child(3) > div.Crom_container__C45Ti.crom-container > table > tbody > tr');
       const westernCalendarData = await Promise.all(westernTeamsCalendar.map(async (team) => {
         const teamHandle = await team.evaluateHandle((teamRow) => teamRow);
         return await teamHandle.evaluate((teamRow) => {
