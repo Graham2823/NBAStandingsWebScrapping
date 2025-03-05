@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm install  # Installs your Puppeteer & other dependencies
 
-      - name: Install missing dependencies for Puppeteer
+        - name: Install missing dependencies for Puppeteer
         run: |
           sudo apt-get update
           sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libcups2 libxshmfence1
